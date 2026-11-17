@@ -136,7 +136,7 @@ img { display: block; }
 }
 .tblock .k { font-weight: 400; color: rgba(255,255,255,.75); }
 .tblock .v { font-weight: 500; }
-.tb-hero { left: 768px; top: 648px; grid-template-columns: 120px 456px; grid-template-rows: repeat(5, 24px); }
+.tb-hero { left: 768px; top: 624px; grid-template-columns: 120px 456px; grid-template-rows: repeat(6, 24px); }
 .tb-hero .head { grid-column: span 2; text-align: center; padding: 2px 0 0; }
 .tb-hero > div { padding: 2px 0 0 12px; font-size: 12px; line-height: 18px; }
 
@@ -327,7 +327,7 @@ br.m-br { display: none; }              /* break only where wanted: */
 .m-label { font-size: 11px; line-height: 16px; }
 .m-title { font-size: 65.88px; line-height: 60.94px; } /* 3 lines: "DHU ENGLISH / PRESENTATION / CONTEST", cap top 120, baseline 288 */
 
-.tb-m { grid-template-columns: 72px 264px; grid-template-rows: repeat(5, 24px); }
+.tb-m { grid-template-columns: 72px 264px; grid-template-rows: repeat(6, 24px); }
 .tb-m > div { padding: 3.25px 0 0 8px; font-size: 10px; line-height: 15px; letter-spacing: 0; }
 .tb-m .head { grid-column: span 2; text-align: center; padding-left: 0; }
 
