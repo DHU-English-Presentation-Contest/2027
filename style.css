@@ -1,4 +1,4 @@
-/* English Presentation Contest 2027 in DHU — Teacup
+/* DHU English Presentation Contest 2027 — Teacup
    Layout follows the Figma file 1:1 at 1440px wide (24px grid). */
 
 :root {
@@ -91,7 +91,7 @@ img { display: block; }
 
 /* Hero */
 .nav a { font-size: 12px; line-height: 16px; letter-spacing: .1em; top: 52.19px; }
-.title { font-size: 135.75px; line-height: 119.3px; white-space: pre; }
+.title { font-size: 120px; line-height: 100px; white-space: pre; } /* 4 lines: cap top 168, baseline 552 */
 .cta {
   position: absolute; left: 96px; top: 720px; width: 148px; height: 48px;
   border: 1.5px solid var(--white);
@@ -324,7 +324,7 @@ br.m-br { display: none; }              /* break only where wanted: */
 
 .m-nav a { top: 28px; font-size: 11px; line-height: 16px; }
 .m-label { font-size: 11px; line-height: 16px; }
-.m-title { font-size: 65.96px; line-height: 60.68px; }
+.m-title { font-size: 65.88px; line-height: 60.94px; } /* 3 lines: "DHU ENGLISH / PRESENTATION / CONTEST", cap top 120, baseline 288 */
 
 .tb-m { grid-template-columns: 72px 264px; grid-template-rows: repeat(5, 24px); }
 .tb-m > div { padding: 3.25px 0 0 8px; font-size: 10px; line-height: 15px; letter-spacing: 0; }
@@ -346,6 +346,7 @@ br.m-br { display: none; }              /* break only where wanted: */
   position: fixed; top: 0; left: 0; right: 0; z-index: 50;
   height: calc(48px * var(--scale, 1));
   background-color: var(--bg);
+  box-shadow: 0 2px 12px rgba(10, 25, 80, .25); /* soft navy shadow so the bar lifts off the page */
   /* same grid as the page, scaled with it */
   background-image:
     linear-gradient(to right, var(--grid-major) 1px, transparent 1px),
