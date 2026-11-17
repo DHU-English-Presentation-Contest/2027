@@ -5,7 +5,8 @@ Static HTML/CSS/JS — open `index.html` in a browser, no build step.
 
 - `index.html` — page (hero / teams / people / footer)
 - `style.css` — layout on a 24px grid (1440px design, scaled down on narrower screens), motion
-- `script.js` — scaling, scroll reveal / decode animations, team modal data
-- `images/` — team photos (1600px)
+- `content.js` — **all text and team data (edit text here only; desktop and mobile both use it)**
+- `script.js` — scaling, scroll reveal / decode animations, menu, modal
+- `teams/<team-name>/<team-name>_main.jpg` — team photos, same folder/file names as the Drive submission folder (resized to 1600px)
 
 Design source: Figma file "whole" → page "design — teacup".

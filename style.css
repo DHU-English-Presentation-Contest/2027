@@ -14,7 +14,7 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-html { background: var(--bg); }
+html { background: var(--bg); overflow-x: hidden; }
 body {
   background: var(--bg);
   color: var(--white);
@@ -36,6 +36,8 @@ img { display: block; }
 .sheet {
   position: relative;
   width: 100%;
+  overflow: hidden; /* full-bleed guide lines must not cause horizontal scroll */
+  scroll-margin-top: 48px; /* keep anchors clear of the sticky bar */
   background-position: calc(50% - 720px) 0;
   background-image:
     linear-gradient(to right, var(--grid-major) 1px, transparent 1px),
@@ -45,8 +47,29 @@ img { display: block; }
   background-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px;
 }
 .hero   { height: 816px; }
+/* Desktop hero: scaled by --hs so the whole sheet fits the viewport height */
+.desktop .hero {
+  height: calc(var(--hh, 816) * 1px);
+  padding-top: calc(var(--hoff, 0) * 1px);
+  background-size:
+    calc(120px * var(--hs, 1)) calc(120px * var(--hs, 1)),
+    calc(120px * var(--hs, 1)) calc(120px * var(--hs, 1)),
+    calc(24px * var(--hs, 1)) calc(24px * var(--hs, 1)),
+    calc(24px * var(--hs, 1)) calc(24px * var(--hs, 1));
+  background-position: calc(50% - 720px * var(--hs, 1)) 0;
+}
+.desktop .hero > .frame { zoom: var(--hs, 1); height: 816px; }
+/* SCROLL ↓: centered, distance from the bottom of the hero (= bottom of the screen) */
+.hero { --scroll-bottom: 32px; }
+.hero-scroll {
+  position: absolute; left: 0; right: 0; bottom: var(--scroll-bottom); text-align: center; /* not translate: the fade/bob animations use it */
+  font-size: 11px; line-height: 14px; letter-spacing: .08em; color: rgba(255,255,255,.7);
+  white-space: nowrap;
+}
+/* vertical guides run the full screen height, above and below the centered sheet */
+.desktop .hero .gv { top: calc(var(--hoff, 0) * -1px / var(--hs, 1)); height: calc(var(--hh, 816) * 1px / var(--hs, 1)); }
 .teams  { height: 2544px; }
-.people { height: 768px; }
+.people { height: 1176px; }
 .footer { height: 240px; }
 
 /* Guide lines */
@@ -77,7 +100,32 @@ img { display: block; }
   position: absolute; left: 20px; top: 14px;
   font-size: 13px; line-height: 17px; letter-spacing: .08em; white-space: nowrap;
 }
-.cta:hover { background: rgba(255,255,255,.12); }
+/* CTA hover: white ink wipes in from the left, text turns blue,
+   corner ticks spread out, arrow exits right and comes back from the left */
+.cta { overflow: visible; isolation: isolate; transition: color .35s var(--ease); }
+.cta::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background: var(--white); transform: scaleX(0); transform-origin: left center;
+  transition: transform .45s var(--ease);
+}
+.cta::after { /* L-shaped corner ticks, 6px, sitting on the border */
+  content: ""; position: absolute; inset: -1.5px; pointer-events: none; opacity: 0;
+  background:
+    linear-gradient(var(--white), var(--white)) 0 0 / 6px 1px,
+    linear-gradient(var(--white), var(--white)) 0 0 / 1px 6px,
+    linear-gradient(var(--white), var(--white)) 100% 0 / 6px 1px,
+    linear-gradient(var(--white), var(--white)) 100% 0 / 1px 6px,
+    linear-gradient(var(--white), var(--white)) 0 100% / 6px 1px,
+    linear-gradient(var(--white), var(--white)) 0 100% / 1px 6px,
+    linear-gradient(var(--white), var(--white)) 100% 100% / 6px 1px,
+    linear-gradient(var(--white), var(--white)) 100% 100% / 1px 6px;
+  background-repeat: no-repeat;
+  transition: inset .35s var(--ease), opacity .25s ease;
+}
+.cta:hover, .cta:focus-visible { color: var(--bg); outline: none; }
+.cta:hover::before, .cta:focus-visible::before { transform: scaleX(1); }
+.cta:hover::after, .cta:focus-visible::after { inset: -8px; opacity: 1; }
+.cta:active::before { transform: scaleX(1); background: rgba(255,255,255,.85); }
 
 /* Title-block tables */
 .tblock { position: absolute; display: grid; }
@@ -87,12 +135,9 @@ img { display: block; }
 }
 .tblock .k { font-weight: 400; color: rgba(255,255,255,.75); }
 .tblock .v { font-weight: 500; }
-.tb-hero { left: 768px; top: 624px; grid-template-columns: 120px 456px; grid-template-rows: repeat(6, 24px); }
+.tb-hero { left: 768px; top: 648px; grid-template-columns: 120px 456px; grid-template-rows: repeat(5, 24px); }
 .tb-hero .head { grid-column: span 2; text-align: center; padding: 2px 0 0; }
 .tb-hero > div { padding: 2px 0 0 12px; font-size: 12px; line-height: 18px; }
-.tb-foot { left: 668px; top: 72px; grid-template-columns: 100px 188px 100px 288px; grid-template-rows: 24px 24px 24px; }
-.tb-foot > div { padding: 4px 0 0 10px; line-height: 14px; }
-.tb-foot .wide { grid-column: span 3; }
 
 /* Teams */
 .group-rule { position: absolute; height: 1px; background: rgba(255,255,255,.6); }
@@ -223,8 +268,18 @@ img { display: block; }
 .ph:hover circle { transform: rotate(30deg); }
 
 /* Small touches */
-.cta .arrow { display: inline-block; font-style: normal; transition: transform .25s var(--ease); }
-.cta:hover .arrow { transform: translateX(4px); }
+.cta .arrow { display: inline-block; font-style: normal; }
+.cta:hover .arrow, .cta:focus-visible .arrow { animation: arrow-loop .55s var(--ease) forwards; }
+@keyframes arrow-loop {
+  0%   { transform: translateX(0);    opacity: 1; }
+  45%  { transform: translateX(14px); opacity: 0; }
+  46%  { transform: translateX(-14px); opacity: 0; }
+  100% { transform: translateX(4px);  opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cta::after { transition: none; }
+  .cta:hover .arrow, .cta:focus-visible .arrow { animation: none; }
+}
 .js .in .scroll { animation: bob 2s ease-in-out 3.2s infinite; }
 @keyframes bob { 50% { translate: 0 4px; } }
 
@@ -236,3 +291,160 @@ img { display: block; }
   .js .cup .fade, .js .cup .steam { opacity: 1 !important; transition: none !important; }
   .cup .steam path, .js .in .scroll { animation: none !important; }
 }
+
+/* =========================================================
+   Mobile (< 768px): 390px design on the same 24px grid,
+   scaled to the viewport width by script.js.
+   Content column x = 27–363 (grid shifted by 3px).
+   ========================================================= */
+.mobile { display: none; }
+@media (max-width: 767px) {
+  .desktop { display: none; }
+  .mobile { display: block; }
+  .page { width: 390px; }
+}
+.mobile .sheet { width: 390px; background-position: 3px 0; }
+.mobile .frame { width: 390px; }
+.m-hero   { height: 1080px; }
+.m-teams  { height: 2064px; }
+.m-people { height: 1032px; }
+.m-footer { height: auto; }
+.m-footer > .frame { height: auto; padding: 58.46px 0 40px; }
+/* Mobile footer: the brand may wrap. 48px lines keep each line's glyphs on the grid
+   (glyph top 72, 120, ...); note and copyright flow below it. */
+.m-foot-flow { position: relative; }
+br.m-br { display: none; }              /* break only where wanted: */
+.m-foot-brand br.m-br { display: inline; } /* mobile footer brand */
+.m-foot-brand { position: relative; margin-left: 26.22px; width: 337px; font-size: 33px; line-height: 48px; }
+.m-foot-brand::after { /* guide under the last line's glyphs */
+  content: ""; position: absolute; left: -2026.22px; width: 5440px; height: 1px; bottom: 11.46px; background: var(--guide);
+}
+.m-foot-note { margin: -2.46px 0 0 27.29px; width: 320px; font-size: 11px; line-height: 24px; color: rgba(255,255,255,.8); }
+.m-foot-copy { margin-left: 28px; font-size: 11px; line-height: 24px; letter-spacing: .04em; color: rgba(255,255,255,.7); }
+
+.m-nav a { top: 28px; font-size: 11px; line-height: 16px; }
+.m-label { font-size: 11px; line-height: 16px; }
+.m-title { font-size: 65.96px; line-height: 60.68px; }
+
+.tb-m { grid-template-columns: 84px 252px; grid-template-rows: repeat(5, 24px); }
+.tb-m > div { padding: 2.75px 0 0 8px; font-size: 11px; line-height: 16.5px; letter-spacing: 0; }
+.tb-m .head { grid-column: span 2; text-align: center; padding-left: 0; }
+
+.m-card { width: 336px; }
+.m-card img { left: 10.5px; top: 10.5px; width: 312px; height: 208px; }
+.m-card .c { width: 312px; }
+.m-card .lbl  { left: 10.05px; top: 246.5px; font-size: 10px; }
+.m-card .proj { left: 9.6px; top: 264.5px; font-size: 24px; line-height: 24px; }
+.m-card .team { left: 9.3px; font-size: 13px; line-height: 24px; }
+
+.m-ph { width: 96px; height: 96px; }
+
+/* =========================================================
+   Sticky bar (desktop + mobile) and mobile menu
+   ========================================================= */
+.topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+  height: calc(48px * var(--scale, 1));
+  background-color: var(--bg);
+  /* same grid as the page, scaled with it */
+  background-image:
+    linear-gradient(to right, var(--grid-major) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-major) 1px, transparent 1px),
+    linear-gradient(to right, var(--grid-minor) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-minor) 1px, transparent 1px);
+  background-size:
+    calc(120px * var(--scale, 1)) calc(120px * var(--scale, 1)),
+    calc(120px * var(--scale, 1)) calc(120px * var(--scale, 1)),
+    calc(24px * var(--scale, 1)) calc(24px * var(--scale, 1)),
+    calc(24px * var(--scale, 1)) calc(24px * var(--scale, 1));
+  background-position: calc(50% - 720px * var(--scale, 1)) 0;
+  border-bottom: 1px solid var(--guide);
+}
+.bar-gv { position: absolute; top: 0; width: 1px; height: 48px; background: var(--guide); }
+.m-only { display: none; }
+/* Logo slot: text for now; an <img> dropped in here is sized to the bar */
+.logo-slot { display: inline-block; height: 16px; line-height: 16px; }
+.logo-slot img { display: block; height: 24px; width: auto; margin-top: -4px; }
+.bar-inner { position: relative; width: 1440px; height: 48px; margin: 0 auto; zoom: var(--scale, 1); }
+.brand { position: absolute; left: 97.5px; top: 16px; font-size: 12px; line-height: 16px; letter-spacing: .1em; }
+.bar-links a {
+  position: absolute; top: 16px; font-size: 12px; line-height: 16px; letter-spacing: .1em;
+  opacity: .65; transition: opacity .2s;
+}
+.bar-links a:hover, .bar-links a.is-active { opacity: 1; }
+.burger.bar-burger { display: none; }
+
+/* Hamburger icon: three 20px lines */
+.burger {
+  width: 24px; height: 24px; padding: 4px 2px;
+  display: flex; flex-direction: column; justify-content: space-between;
+  background: none; border: 0; cursor: pointer;
+}
+.burger span { display: block; height: 1.5px; background: var(--white); }
+.m-burger { position: absolute; left: 339px; top: 24px; }
+
+@media (max-width: 767px) {
+  .bar-inner { width: 390px; }
+  .topbar { background-position: calc(3px * var(--scale, 1)) 0; }
+  .d-only { display: none; }
+  .m-only { display: block; }
+  .brand { left: 27.5px; font-size: 11px; }
+  .bar-links { display: none; }
+  .burger.bar-burger { display: flex; position: absolute; left: 339px; top: 12px; }
+}
+
+/* Full-screen menu: 390px frame on the 24px grid (Figma "Mobile menu (open)") */
+.menu {
+  position: fixed; inset: 0; z-index: 60;
+  background-color: var(--bg);
+  opacity: 0; transition: opacity .3s ease;
+}
+.menu.open { opacity: 1; }
+.menu:focus { outline: none; }
+.menu-frame {
+  position: relative; width: 390px; margin: 0 auto;
+  height: calc(100dvh / var(--scale, 1));
+  zoom: var(--scale, 1);
+  overflow: hidden;
+  background-image:
+    linear-gradient(to right, var(--grid-minor) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-minor) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-position: 3px 0;
+}
+.mgh, .mgv { position: absolute; background: var(--guide); }
+.mgh { left: 0; width: 390px; height: 1px; }
+.mgv { top: 0; width: 1px; height: 100%; }
+.menu-close {
+  position: absolute; left: 339px; top: 12px; width: 24px; height: 24px; padding: 0;
+  background: none; border: 0; cursor: pointer;
+}
+.menu-close svg { display: block; transition: rotate .3s var(--ease); }
+.menu-close:hover svg { rotate: 90deg; }
+.menu-links a {
+  position: absolute; left: 0; width: 390px; height: 48px;
+  translate: 0 16px; opacity: 0;
+  transition: translate .5s var(--ease), opacity .5s var(--ease), background-color .2s;
+}
+.menu-links a:hover { background: rgba(255,255,255,.08); }
+.menu-links .num { position: absolute; left: 27.38px; top: 23.87px; font-size: 11px; line-height: 16px; letter-spacing: .08em; color: rgba(255,255,255,.7); }
+.menu-links .word { position: absolute; top: 2.73px; font-size: 33.52px; line-height: 40px; letter-spacing: .1em; }
+.menu.open .menu-links a { translate: 0 0; opacity: 1; }
+.menu.open .menu-links a:nth-child(2) { transition-delay: .06s, .06s, 0s; }
+.menu.open .menu-links a:nth-child(3) { transition-delay: .12s, .12s, 0s; }
+.menu-foot { position: absolute; left: 27.1px; bottom: 20px; font-size: 10px; line-height: 24px; letter-spacing: .06em; color: rgba(255,255,255,.7); }
+body.menu-open { overflow: hidden; }
+
+@media (prefers-reduced-motion: reduce) {
+  .menu, .menu-links a { transition: none !important; }
+}
+
+small { font-size: inherit; }
+
+/* People: TBA + name centered under each circle (Figma "Person" unit) */
+.person-label { position: absolute; display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; }
+.person-label .p-tba { font-size: 26px; line-height: 31px; }
+.person-label .p-aff { font-size: 11px; line-height: 14px; color: rgba(255,255,255,.7); white-space: nowrap; }
+.person-label.m { gap: 6px; }
+.person-label.m .p-tba { font-size: 18px; line-height: 22px; }
+.person-label.m .p-aff { font-size: 10px; line-height: 14px; white-space: normal; }

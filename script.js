@@ -2,8 +2,18 @@
 (function () {
   const root = document.documentElement;
   function fit() {
-    const scale = Math.min(1, window.innerWidth / 1440);
+    const w = window.innerWidth;
+    // < 768px: 390px mobile design; otherwise the 1440px desktop design
+    const scale = w < 768 ? w / 390 : Math.min(1, w / 1440);
     root.style.setProperty('--scale', scale);
+    // Desktop hero always fills exactly one screen (and shows nothing else):
+    // shorter screens shrink it, taller screens add space and center it on the grid.
+    const vh = window.innerHeight / scale;            // viewport height in design px
+    const hs = w < 768 ? 1 : Math.min(1, vh / 816);
+    const extra = w < 768 ? 0 : Math.max(0, vh - 816);
+    root.style.setProperty('--hs', hs);
+    root.style.setProperty('--hh', w < 768 ? 816 : Math.max(vh, 816 * hs));
+    root.style.setProperty('--hoff', Math.floor(extra / 2 / 24) * 24);
   }
   fit();
   window.addEventListener('resize', fit);
@@ -30,7 +40,7 @@ function decode(el, duration = 700) {
       for (let i = 0; i < t.text.length; i++) {
         const ch = t.text[i];
         const resolved = (offset + i) / total < p;
-        out += resolved || /[\s—–\/.:,()’'-]/.test(ch) ? ch : GLYPHS[(Math.random() * GLYPHS.length) | 0];
+        out += resolved || /[\s—–\/.:,()’'\-→↓↵]/.test(ch) ? ch : GLYPHS[(Math.random() * GLYPHS.length) | 0];
       }
       t.node.nodeValue = out;
       offset += t.text.length;
@@ -65,15 +75,20 @@ document.addEventListener('DOMContentLoaded', () => {
     sec.querySelectorAll('.ph').forEach((c, i) => c.style.setProperty('--i', i));
   });
 
-  const sheets = [...document.querySelectorAll('.sheet')];
-  const hero = sheets[0];
-  // Hero plays once fonts are ready (avoids a jump mid-animation)
-  (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => requestAnimationFrame(() => reveal(hero)));
-
+  // Every sheet (hero included) reveals when it enters the viewport,
+  // after web fonts are ready so text doesn't jump mid-animation.
+  const fontsReady = Promise.race([
+    document.fonts ? document.fonts.ready : Promise.resolve(),
+    new Promise((r) => setTimeout(r, 1500)), // don't wait forever on slow font loads
+  ]);
   const io = new IntersectionObserver((entries) => {
-    entries.forEach((e) => { if (e.isIntersecting) { reveal(e.target); io.unobserve(e.target); } });
+    entries.forEach((e) => {
+      if (!e.isIntersecting) return;
+      io.unobserve(e.target);
+      fontsReady.then(() => reveal(e.target));
+    });
   }, { threshold: 0.12 });
-  sheets.slice(1).forEach((s) => io.observe(s));
+  document.querySelectorAll('.sheet').forEach((s) => io.observe(s));
 
   // Each team card reveals when it comes into view
   const cardIO = new IntersectionObserver((entries) => {
@@ -86,37 +101,55 @@ document.addEventListener('DOMContentLoaded', () => {
   }, { threshold: 0.2 });
   document.querySelectorAll('.card').forEach((c) => cardIO.observe(c));
 
+  // ---------- Top bar ----------
+  const bar = document.getElementById('topbar');
+
+  // Highlight the section currently in view
+  const barLinks = [...bar.querySelectorAll('[data-section]')];
+  const secIO = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (!e.isIntersecting) return;
+      const id = e.target.id.replace(/^m-/, '');
+      barLinks.forEach((a) => a.classList.toggle('is-active', a.dataset.section === id));
+    });
+  }, { rootMargin: '-45% 0px -45% 0px' });
+  document.querySelectorAll('#teams, #people, #m-teams, #m-people').forEach((s) => secIO.observe(s));
+
+  // ---------- Mobile menu ----------
+  const menu = document.getElementById('menu');
+  const burgers = [...document.querySelectorAll('.burger')];
+  let lastBurger = null;
+  function openMenu(btn) {
+    lastBurger = btn;
+    menu.hidden = false;
+    document.body.classList.add('menu-open');
+    burgers.forEach((b) => b.setAttribute('aria-expanded', 'true'));
+    requestAnimationFrame(() => requestAnimationFrame(() => menu.classList.add('open')));
+    menu.focus({ preventScroll: true });
+  }
+  function closeMenu() {
+    if (menu.hidden) return;
+    menu.classList.remove('open');
+    document.body.classList.remove('menu-open');
+    burgers.forEach((b) => b.setAttribute('aria-expanded', 'false'));
+    setTimeout(() => { menu.hidden = true; }, REDUCED ? 0 : 300);
+    if (lastBurger) lastBurger.focus({ preventScroll: true });
+  }
+  burgers.forEach((b) => b.addEventListener('click', () => openMenu(b)));
+  menu.querySelector('.menu-close').addEventListener('click', closeMenu);
+  menu.querySelectorAll('.menu-links a').forEach((a) => a.addEventListener('click', closeMenu));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
+
+  // CTA: decode the label on hover (the arrow keeps its own animation)
+  document.querySelectorAll('.cta').forEach((a) => {
+    const label = a.querySelector('span');
+    a.addEventListener('mouseenter', () => decode(label, 450));
+  });
+
   document.querySelectorAll('[data-hover-decode]').forEach((a) => a.addEventListener('mouseenter', () => decode(a, 400)));
 });
 
-// Team data shown in the modal (from each team's info doc).
-const TEAMS = {
-  'eigottesa-ez': {
-    label: 'SA–B  /  TEAM 01',
-    project: 'inEX',
-    team: 'EigotteSA, Ez   /   英語ってSA, Ez',
-    members: ['Nobuteru Mamiya', 'Maiko Zen', 'Aishah Iwamura', 'Marin Honoki', 'Youmi Nagase', 'Masayoshi Hosokawa', 'Misaki Nishihara', 'Daiki Nagai', 'Nanasa Azuma', 'Yunosuke Kimura', 'Momoka Nakanishi', 'Soomin Sim', 'Shu Izumi', 'Koichi Masayama', 'Ginga Parent', 'Makiko Ebata Yamada'],
-  },
-  'nun-tan': {
-    label: 'SA–B  /  TEAM 02',
-    project: 'Who’s attractive to the opposite sex, by generation?',
-    team: 'Nun-tan',
-    members: ['Arashi Otsuka'],
-  },
-  'rono': {
-    label: 'SA–B  /  TEAM 03',
-    project: 'Paleo Collect',
-    team: 'Rono',
-    members: ['Riku Mito'],
-  },
-  'were-creatures': {
-    label: 'C–E  /  TEAM 04',
-    project: 'Exploration Adventure Game',
-    team: 'We’re Creatures',
-    members: ['Natsume Tsukamoto', 'Yukino Kurata', 'Misora Sugano', 'Sayoko Ishii', 'Yui Mizoguchi', 'Ruri Nakamura'],
-    about: 'Explore the town, collect items, talk to its residents, and search for your parents. The theme of this game is love. There are multiple endings, and the choices you make throughout the game will determine which ending you reach.',
-  },
-};
+
 
 document.addEventListener('DOMContentLoaded', () => {
   const modal = document.getElementById('team-modal');
@@ -126,7 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function open(key, btn) {
     const t = TEAMS[key];
     if (!t) return;
-    $('modal-img').src = `images/${key}.jpg`;
+    $('modal-img').src = `teams/${key}/${key}_main.jpg`;
     $('modal-img').alt = `Team ${t.team}`;
     $('modal-lbl').textContent = t.label;
     $('modal-proj').textContent = t.project;
