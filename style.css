@@ -1,0 +1,238 @@
+/* EPC / DHU 2026 — Teacup
+   Layout follows the Figma file 1:1 at 1440px wide (24px grid). */
+
+:root {
+  --bg: #315bd3;
+  --white: #fff;
+  --guide: rgba(255, 255, 255, .35);
+  --grid-major: rgba(255, 255, 255, .16);
+  --grid-minor: rgba(255, 255, 255, .07);
+  --bc: "Barlow Condensed", sans-serif;
+  --mono: "IBM Plex Mono", monospace;
+  --jp: "IBM Plex Sans JP", sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { background: var(--bg); }
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: var(--mono);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+a { color: inherit; text-decoration: none; }
+img { display: block; }
+
+/* Fixed 1440px canvas, scaled to the viewport by script.js */
+.page { width: 1440px; zoom: var(--scale, 1); }
+@media (min-width: 1440px) { .page { width: 100%; } }
+
+/* 1440px content frame, centered; sections and grid run full-bleed */
+.frame { position: relative; width: 1440px; height: 100%; margin: 0 auto; }
+
+/* Each section is a sheet with its own 24px grid */
+.sheet {
+  position: relative;
+  width: 100%;
+  background-position: calc(50% - 720px) 0;
+  background-image:
+    linear-gradient(to right, var(--grid-major) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-major) 1px, transparent 1px),
+    linear-gradient(to right, var(--grid-minor) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-minor) 1px, transparent 1px);
+  background-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px;
+}
+.hero   { height: 816px; }
+.teams  { height: 2544px; }
+.people { height: 768px; }
+.footer { height: 240px; }
+
+/* Guide lines */
+.gh, .gv { position: absolute; background: var(--guide); pointer-events: none; }
+.gh { left: -2000px; width: 5440px; height: 1px; }
+.gv { top: 0; width: 1px; height: 100%; }
+
+/* Absolutely placed elements */
+.a { position: absolute; white-space: nowrap; }
+
+/* Type */
+.bc   { font-family: var(--bc); font-weight: 600; }
+.mono { font-family: var(--mono); font-weight: 400; }
+.mono-m { font-family: var(--mono); font-weight: 500; }
+.jp   { font-family: var(--jp); font-weight: 500; }
+
+.label { font-size: 13px; line-height: 17px; letter-spacing: .08em; color: rgba(255,255,255,.8); }
+.h2    { font-size: 100.56px; line-height: 121px; }
+
+/* Hero */
+.nav a { font-size: 12px; line-height: 16px; letter-spacing: .1em; top: 52.19px; }
+.title { font-size: 135.75px; line-height: 119.3px; white-space: pre; }
+.cta {
+  position: absolute; left: 96px; top: 720px; width: 148px; height: 48px;
+  border: 1.5px solid var(--white);
+}
+.cta span {
+  position: absolute; left: 20px; top: 14px;
+  font-size: 13px; line-height: 17px; letter-spacing: .08em; white-space: nowrap;
+}
+.cta:hover { background: rgba(255,255,255,.12); }
+
+/* Title-block tables */
+.tblock { position: absolute; display: grid; }
+.tblock > div {
+  border: 1px solid var(--white);
+  font-size: 11px; letter-spacing: .04em; white-space: nowrap;
+}
+.tblock .k { font-weight: 400; color: rgba(255,255,255,.75); }
+.tblock .v { font-weight: 500; }
+.tb-hero { left: 768px; top: 624px; grid-template-columns: 120px 456px; grid-template-rows: repeat(6, 24px); }
+.tb-hero .head { grid-column: span 2; text-align: center; padding: 2px 0 0; }
+.tb-hero > div { padding: 2px 0 0 12px; font-size: 12px; line-height: 18px; }
+.tb-foot { left: 668px; top: 72px; grid-template-columns: 100px 188px 100px 288px; grid-template-rows: 24px 24px 24px; }
+.tb-foot > div { padding: 4px 0 0 10px; line-height: 14px; }
+.tb-foot .wide { grid-column: span 3; }
+
+/* Teams */
+.group-rule { position: absolute; height: 1px; background: rgba(255,255,255,.6); }
+.count { font-size: 12px; line-height: 16px; letter-spacing: .08em; color: rgba(255,255,255,.8); }
+
+/* Team card: 600 × 600, two per row (x = 96 / 744). Opens the team modal. */
+.card {
+  position: absolute; width: 600px; height: 600px;
+  background: rgba(255,255,255,.1);
+  border: 1.5px solid rgba(255,255,255,.5);
+  color: inherit; font: inherit; text-align: left; cursor: pointer;
+  transition: background-color .2s;
+}
+.card:hover, .card:focus-visible { background: rgba(255,255,255,.18); outline: none; }
+.card img {
+  position: absolute; left: 22.5px; top: 22.5px; width: 552px; height: 368px; object-fit: cover;
+}
+.card .c { position: absolute; width: 552px; }
+.card .lbl  { left: 21.62px; top: 414.5px; font-size: 11px; line-height: 24px; letter-spacing: .08em; color: rgba(255,255,255,.75); white-space: pre; }
+.card .proj { left: 19.91px; top: 435.5px; font-size: 48px; line-height: 48px; }
+.card .team { left: 21.12px; top: 509.5px; font-size: 15px; line-height: 24px; white-space: pre-wrap; }
+.card .team.after2 { top: 557.5px; } /* project title on 2 lines */
+
+/* Team modal */
+.modal {
+  width: min(960px, calc(100vw - 32px)); max-height: calc(100vh - 32px);
+  margin: auto; padding: 0;
+  background-color: var(--bg); color: var(--white);
+  border: 1.5px solid var(--white);
+  background-image:
+    linear-gradient(to right, var(--grid-minor) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-minor) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+.modal::backdrop { background: rgba(10, 25, 80, .7); }
+.modal-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; padding: 48px; }
+.modal img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; }
+.modal .lbl  { font-size: 11px; line-height: 24px; letter-spacing: .08em; color: rgba(255,255,255,.75); white-space: pre; }
+.modal .proj { font-size: 48px; line-height: 48px; }
+.modal .team { margin-top: 16px; font-size: 15px; line-height: 24px; white-space: pre-wrap; }
+.modal .rule { height: 1px; background: rgba(255,255,255,.4); margin: 24px 0; }
+.modal .cap  { font-size: 10px; line-height: 24px; letter-spacing: .08em; color: rgba(255,255,255,.7); }
+.modal .txt  { font-size: 13px; line-height: 24px; color: rgba(255,255,255,.9); }
+.modal .txt + .cap { margin-top: 24px; }
+.modal ul { list-style: none; }
+.modal-close {
+  position: absolute; top: 12px; right: 12px;
+  background: none; border: 1px solid var(--white); color: var(--white);
+  font: 500 11px/1 var(--mono); letter-spacing: .08em; padding: 6px 10px; cursor: pointer;
+}
+.modal-close:hover { background: rgba(255,255,255,.15); }
+@media (max-width: 720px) {
+  .modal-inner { grid-template-columns: 1fr; gap: 24px; padding: 48px 24px 24px; }
+  .modal .proj { font-size: 36px; line-height: 40px; }
+}
+
+/* People */
+.ph { position: absolute; top: 360px; width: 168px; height: 168px; }
+.role { font-size: 36px; line-height: 43px; top: 276px; }
+.tba  { font-size: 26px; line-height: 31px; top: 550px; }
+.aff  { font-size: 11px; line-height: 14px; top: 589px; color: rgba(255,255,255,.7); }
+
+/* Footer */
+.foot-rule { position: absolute; left: 96px; top: 24px; width: 1248px; height: 1.5px; background: var(--white); }
+
+/* =========================================================
+   Motion
+   - .js is set in <head>; without JS everything is shown as-is.
+   - A section gets .in when it enters the viewport (hero: on load).
+   - --d = delay, --i = stagger index (set by script.js)
+   ========================================================= */
+:root { --ease: cubic-bezier(.2, .7, .2, 1); }
+
+/* Guide lines draw across */
+.js .gh { transform: scaleX(0); transform-origin: left center; }
+.js .gv { transform: scaleY(0); transform-origin: center top; }
+.js .in .gh, .js .in .gv {
+  transform: none;
+  transition: transform 1.4s var(--ease) calc(var(--i, 0) * 70ms);
+}
+
+/* Fade up */
+.js .rv { opacity: 0; translate: 0 12px; }
+.js .in .rv {
+  opacity: 1; translate: 0 0;
+  transition: opacity .8s var(--ease) var(--d, 0s), translate .8s var(--ease) var(--d, 0s);
+}
+
+/* Title lines rise from a mask */
+.title .ln { display: block; overflow: hidden; }
+.title .ln > span { display: block; }
+.js .title .ln > span { transform: translateY(105%); }
+.js .in .title .ln > span { transform: none; transition: transform 1s var(--ease) var(--d, 0s); }
+
+/* Section headings rise (inner span added by script.js) */
+.rise { overflow: hidden; }
+.rise > span { display: block; }
+.js .rise > span { transform: translateY(105%); }
+.js .in .rise > span { transform: none; transition: transform .9s var(--ease) .15s; }
+
+/* Teacup: solid lines draw, dashed lines fade, section fill appears last */
+.cup .draw { stroke-dasharray: 1; stroke-dashoffset: 0; }
+.cup .sec { fill-opacity: .28; }
+.js .cup .draw { stroke-dashoffset: 1; }
+.js .cup .sec { fill-opacity: 0; }
+.js .cup .fade, .js .cup .steam { opacity: 0; }
+.js .in .cup .draw { stroke-dashoffset: 0; transition: stroke-dashoffset 1.4s var(--ease) var(--d, 0s); }
+.js .in .cup .sec { fill-opacity: .28; transition: stroke-dashoffset 1.4s var(--ease) var(--d, 0s), fill-opacity .8s ease 2.1s; }
+.js .in .cup .fade { opacity: 1; transition: opacity .8s ease var(--d, 0s); }
+.js .in .cup .steam { opacity: 1; transition: opacity 1.2s ease 2.2s; }
+.cup .steam path { animation: steam 1.8s linear infinite; }
+@keyframes steam { to { stroke-dashoffset: -24; } }
+
+/* Team cards and people circles */
+.js .card { opacity: 0; translate: 0 24px; }
+.js .card.in {
+  opacity: 1; translate: 0 0;
+  transition: opacity .9s var(--ease) calc(.2s + var(--i, 0) * 120ms),
+              translate .9s var(--ease) calc(.2s + var(--i, 0) * 120ms),
+              background-color .2s;
+}
+.js .ph { opacity: 0; scale: .9; }
+.js .in .ph {
+  opacity: 1; scale: 1;
+  transition: opacity .8s var(--ease) calc(.3s + var(--i, 0) * 90ms), scale .8s var(--ease) calc(.3s + var(--i, 0) * 90ms);
+}
+.ph circle { transform-origin: center; transition: transform .6s var(--ease); }
+.ph:hover circle { transform: rotate(30deg); }
+
+/* Small touches */
+.cta .arrow { display: inline-block; font-style: normal; transition: transform .25s var(--ease); }
+.cta:hover .arrow { transform: translateX(4px); }
+.js .in .scroll { animation: bob 2s ease-in-out 3.2s infinite; }
+@keyframes bob { 50% { translate: 0 4px; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .js .gh, .js .gv, .js .rv, .js .title .ln > span, .js .rise > span,
+  .js .card, .js .ph { transform: none !important; translate: none !important; scale: none !important; opacity: 1 !important; transition: none !important; }
+  .js .cup .draw { stroke-dashoffset: 0 !important; transition: none !important; }
+  .js .cup .sec { fill-opacity: .28 !important; }
+  .js .cup .fade, .js .cup .steam { opacity: 1 !important; transition: none !important; }
+  .cup .steam path, .js .in .scroll { animation: none !important; }
+}
