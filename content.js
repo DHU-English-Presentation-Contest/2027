@@ -5,20 +5,20 @@
 
 const TEXT = {
   // ---- Top bar / menu
-  'brand': "English Presentation <br class=\"m-br\">Contest 2027", // <br class="m-br"> = line break in the mobile footer only
+  'brand': "English Presentation <br class=\"m-br\">Contest 2027 in DHU", // <br class="m-br"> = line break in the mobile footer only
   'nav.about': "ABOUT",
   'nav.teams': "TEAMS",
   'nav.people': "PEOPLE",
   'menu.no1': "01",
   'menu.no2': "02",
   'menu.no3': "03",
-  'menu.foot': "ENGLISH PRESENTATION CONTEST IN DHU 2027<br>2027 / 01 / 28 (THU) — SURUGADAI HALL",
+  'menu.foot': "ENGLISH PRESENTATION CONTEST 2027 in DHU<br>2027 / 01 / 28 (THU) — SURUGADAI HALL",
   // ---- Hero
   'hero.sheet': "SHEET 01 — THE GIFT",
   'hero.title1': "ENGLISH",
   'hero.title2': "PRESENTATION",
   'hero.title3': "CONTEST",
-  'hero.year': "2027",
+  'hero.year': "2027 in DHU",
   'hero.tagline': "20TH ANNIVERSARY — CHINA<br>A GIFT FROM NOW TO THE FUTURE",
   'hero.cta': "GRAB A CUP <i class=\"arrow\">→</i>",
   'hero.scroll': "SCROLL ↓",
@@ -26,7 +26,7 @@ const TEXT = {
   'hero.cup.dimension': "Ø 20 YEARS",
   'hero.table.head': "PROJECT No. 20",
   'hero.table.projectLabel': "PROJECT:",
-  'hero.table.project': "ENGLISH PRESENTATION CONTEST 2027",
+  'hero.table.project': "ENGLISH PRESENTATION CONTEST 2027 in DHU",
   'hero.table.dateLabel': "DATE:",
   'hero.table.date': "<time datetime=\"2027-01-28\">2027 / 01 / 28 (THU)</time>     REV. 20",
   'hero.table.venueLabel': "VENUE:",

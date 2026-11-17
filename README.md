@@ -1,6 +1,6 @@
-# English Presentation Contest in DHU 2027
+# English Presentation Contest 2027 in DHU
 
-Website for the 20th English Presentation Contest at DHU (2027-01-28, Surugadai Hall).
+Website for the English Presentation Contest 2027 in DHU — the 20th contest (2027-01-28, Surugadai Hall).
 Static HTML/CSS/JS — open `index.html` in a browser, no build step.
 
 - `index.html` — page (hero / teams / people / footer)

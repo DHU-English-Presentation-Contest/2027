@@ -1,4 +1,4 @@
-/* EPC / DHU 2026 — Teacup
+/* English Presentation Contest 2027 in DHU — Teacup
    Layout follows the Figma file 1:1 at 1440px wide (24px grid). */
 
 :root {
@@ -326,8 +326,8 @@ br.m-br { display: none; }              /* break only where wanted: */
 .m-label { font-size: 11px; line-height: 16px; }
 .m-title { font-size: 65.96px; line-height: 60.68px; }
 
-.tb-m { grid-template-columns: 84px 252px; grid-template-rows: repeat(5, 24px); }
-.tb-m > div { padding: 2.75px 0 0 8px; font-size: 11px; line-height: 16.5px; letter-spacing: 0; }
+.tb-m { grid-template-columns: 72px 264px; grid-template-rows: repeat(5, 24px); }
+.tb-m > div { padding: 3.25px 0 0 8px; font-size: 10px; line-height: 15px; letter-spacing: 0; }
 .tb-m .head { grid-column: span 2; text-align: center; padding-left: 0; }
 
 .m-card { width: 336px; }
@@ -388,7 +388,7 @@ br.m-br { display: none; }              /* break only where wanted: */
   .topbar { background-position: calc(3px * var(--scale, 1)) 0; }
   .d-only { display: none; }
   .m-only { display: block; }
-  .brand { left: 27.5px; font-size: 11px; }
+  .brand { left: 27.5px; font-size: 10px; letter-spacing: .06em; }
   .bar-links { display: none; }
   .burger.bar-burger { display: flex; position: absolute; left: 339px; top: 12px; }
 }
