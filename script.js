@@ -153,6 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 document.addEventListener('DOMContentLoaded', () => {
   const modal = document.getElementById('team-modal');
+  if (!modal) return; // pages without team cards (about.html)
   const $ = (id) => document.getElementById(id);
   let opener = null;
 

@@ -38,7 +38,8 @@ img { display: block; }
   width: 100%;
   overflow: hidden; /* full-bleed guide lines must not cause horizontal scroll */
   scroll-margin-top: 48px; /* keep anchors clear of the sticky bar */
-  background-position: calc(50% - 720px) 0;
+  /* % is relative to (box − tile), so each tile size needs its own offset to put lines on the frame grid */
+  background-position: calc(50% - 660px) 0, calc(50% - 660px) 0, calc(50% - 708px) 0, calc(50% - 708px) 0;
   background-image:
     linear-gradient(to right, var(--grid-major) 1px, transparent 1px),
     linear-gradient(to bottom, var(--grid-major) 1px, transparent 1px),
@@ -56,7 +57,7 @@ img { display: block; }
     calc(120px * var(--hs, 1)) calc(120px * var(--hs, 1)),
     calc(24px * var(--hs, 1)) calc(24px * var(--hs, 1)),
     calc(24px * var(--hs, 1)) calc(24px * var(--hs, 1));
-  background-position: calc(50% - 720px * var(--hs, 1)) 0;
+  background-position: calc(50% - 660px * var(--hs, 1)) 0, calc(50% - 660px * var(--hs, 1)) 0, calc(50% - 708px * var(--hs, 1)) 0, calc(50% - 708px * var(--hs, 1)) 0;
 }
 .desktop .hero > .frame { zoom: var(--hs, 1); height: 816px; }
 /* SCROLL ↓: centered, distance from the bottom of the hero (= bottom of the screen) */
@@ -319,7 +320,7 @@ br.m-br { display: none; }              /* break only where wanted: */
 .m-foot-brand::after { /* guide under the last line's glyphs */
   content: ""; position: absolute; left: -2026.22px; width: 5440px; height: 1px; bottom: 11.46px; background: var(--guide);
 }
-.m-foot-note { margin: -2.46px 0 0 27.29px; width: 320px; font-size: 11px; line-height: 24px; color: rgba(255,255,255,.8); }
+.m-foot-brand + .m-foot-copy { margin-top: -2.46px; } /* first line after the brand: baseline back on the grid */
 .m-foot-copy { margin-left: 28px; font-size: 11px; line-height: 24px; letter-spacing: .04em; color: rgba(255,255,255,.7); }
 
 .m-nav a { top: 28px; font-size: 11px; line-height: 16px; }
@@ -358,7 +359,7 @@ br.m-br { display: none; }              /* break only where wanted: */
     calc(120px * var(--scale, 1)) calc(120px * var(--scale, 1)),
     calc(24px * var(--scale, 1)) calc(24px * var(--scale, 1)),
     calc(24px * var(--scale, 1)) calc(24px * var(--scale, 1));
-  background-position: calc(50% - 720px * var(--scale, 1)) 0;
+  background-position: calc(50% - 660px * var(--scale, 1)) 0, calc(50% - 660px * var(--scale, 1)) 0, calc(50% - 708px * var(--scale, 1)) 0, calc(50% - 708px * var(--scale, 1)) 0;
   border-bottom: 1px solid var(--guide);
 }
 .bar-gv { position: absolute; top: 0; width: 1px; height: 48px; background: var(--guide); }
@@ -449,3 +450,31 @@ small { font-size: inherit; }
 .person-label.m { gap: 6px; }
 .person-label.m .p-tba { font-size: 18px; line-height: 22px; }
 .person-label.m .p-aff { font-size: 10px; line-height: 14px; white-space: normal; }
+
+/* =========================================================
+   About page (about.html) — same grid rules as the top page
+   ========================================================= */
+.about-body { font-size: 14px; line-height: 24px; white-space: normal; color: rgba(255,255,255,.9); }
+.about-body.m { font-size: 13px; }
+
+/* event information: same look as the hero title block */
+.tb-about { grid-template-columns: 120px 456px; }
+.tb-about > div { padding: 2px 0 0 12px; font-size: 12px; line-height: 18px; }
+.tb-about .head { grid-column: span 2; text-align: center; padding-left: 0; }
+.tb-about.m { grid-template-columns: 96px 240px; }
+.tb-about.m > div { padding: 3.25px 0 0 8px; font-size: 10px; line-height: 15px; letter-spacing: 0; }
+.tb-about.m .head { padding-left: 0; }
+
+/* anniversary gifts: 7 cells, 20th inverted */
+.gifts { position: absolute; display: grid; grid-template-columns: repeat(7, 1fr); }
+.gift { position: relative; height: 72px; border: 1px solid var(--white); }
+.gift .gn { position: absolute; left: 12px; top: 7.87px; font-size: 11px; line-height: 24px; letter-spacing: .08em; color: rgba(255,255,255,.75); }
+.gift .gm { position: absolute; left: 10.6px; top: 26.79px; font-size: 33.6px; line-height: 40px; }
+.gift.is-20 { background: var(--white); color: var(--bg); }
+.gift.is-20 .gn { color: var(--bg); }
+
+.tb-gifts { grid-template-columns: 96px 240px; }
+.tb-gifts > div { padding: 3.25px 0 0 8px; font-size: 10px; line-height: 15px; letter-spacing: .04em; }
+.tb-gifts .v { font-weight: 500; }
+.tb-gifts .is-20 { background: var(--white); color: var(--bg); }
+
