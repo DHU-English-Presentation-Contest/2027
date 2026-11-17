@@ -2,7 +2,7 @@
 
 Website for the DHU English Presentation Contest 2027 (short: DHU EPC) — the 20th contest (2027-01-28, Surugadai Hall).
 
-**Live site:** https://dhu-english-presentation-contest.github.io/2027/
+**Live site:** https://dhu-epc.github.io/2027/
 
 Static HTML/CSS/JS — open `index.html` in a browser, no build step.
 
